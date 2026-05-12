@@ -10,7 +10,7 @@
     "test": "jest --passWithNoTests"
   },
   "dependencies": {
-    "@prime-cloud/shared-types": "workspace:*"
+    "@prime-cloud/shared-types": "*"
   },
   "devDependencies": {
     "@types/node": "^25.6.2",

@@ -15,9 +15,9 @@
     "prisma:seed": "tsx prisma/seed.ts"
   },
   "dependencies": {
-    "@prime-cloud/shared-types": "workspace:*",
-    "@prime-cloud/accounting-engine": "workspace:*",
-    "@prime-cloud/zatca-sdk": "workspace:*",
+    "@prime-cloud/shared-types": "*",
+    "@prime-cloud/accounting-engine": "*",
+    "@prime-cloud/zatca-sdk": "*",
     "@nestjs/common": "^11.0.0",
     "@nestjs/core": "^11.0.0",
     "@nestjs/jwt": "^11.0.0",

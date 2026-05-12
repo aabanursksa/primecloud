@@ -10,8 +10,8 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@prime-cloud/shared-types": "workspace:*",
-    "@prime-cloud/ui": "workspace:*",
+    "@prime-cloud/shared-types": "*",
+    "@prime-cloud/ui": "*",
     "next": "^15.0.0",
     "react": "^19.2.5",
     "react-dom": "^19.2.5",
