@@ -7,7 +7,7 @@
     "turbo:build": "turbo build",
     "turbo:lint": "turbo lint",
     "turbo:typecheck": "turbo typecheck",
-    "build": "echo '[Hostinger] Production build handled by CI/CD. Use \"pnpm turbo:build\" for local build.' && npm install --prefix deploy --legacy-peer-deps 2>/dev/null; exit 0",
+    "build": "mkdir -p dist && cp -r deploy/* dist/ && cd dist && npm install --production --legacy-peer-deps 2>/dev/null; exit 0",
     "lint": "turbo lint",
     "typecheck": "turbo typecheck",
     "test": "turbo test",
@@ -15,15 +15,7 @@
     "dev:dashboard": "turbo dev --filter=@prime-cloud/dashboard",
     "dev:pos": "turbo dev --filter=@prime-cloud/pos",
     "format": "prettier --write \"**/*.{ts,tsx,js,json,css}\"",
-    "start": "node deploy/server.js"
-  },
-  "dependencies": {
-    "express": "^4.21.0",
-    "cors": "^2.8.5",
-    "helmet": "^8.0.0",
-    "compression": "^1.7.4",
-    "jsonwebtoken": "^9.0.2",
-    "bcryptjs": "^2.4.3"
+    "start": "node dist/server.js"
   },
   "devDependencies": {
     "turbo": "^2.4.0",
