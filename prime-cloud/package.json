@@ -1,6 +1,7 @@
 {
   "name": "prime-cloud",
   "private": true,
+  "packageManager": "npm@10.8.0",
   "scripts": {
     "dev": "turbo dev",
     "build": "npx -y turbo build",
