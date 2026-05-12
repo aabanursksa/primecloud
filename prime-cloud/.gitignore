@@ -11,3 +11,4 @@ Thumbs.db
 *.pem
 !certs/*.pem
 .turbo/
+package-lock.json
