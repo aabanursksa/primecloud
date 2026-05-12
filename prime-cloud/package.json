@@ -2,12 +2,13 @@
   "name": "prime-cloud",
   "private": true,
   "packageManager": "pnpm@10.0.0",
+  "pnpm": {
+    "onlyBuiltDependencies": ["@nestjs/core", "@prisma/client", "@prisma/engines", "msgpackr-extract", "prisma", "sharp"]
+  },
   "scripts": {
+    "preinstall": "node -e 'if(!/pnpm/.test(process.env.npm_execpath||\"\"))throw new Error(\"Use pnpm (npm install -g pnpm@10) to install dependencies\")'",
     "dev": "turbo dev",
-    "turbo:build": "turbo build",
-    "turbo:lint": "turbo lint",
-    "turbo:typecheck": "turbo typecheck",
-    "build": "echo 'Prime Cloud ready. Use deploy/ for production.'; exit 0",
+    "build": "turbo build",
     "lint": "turbo lint",
     "typecheck": "turbo typecheck",
     "test": "turbo test",
