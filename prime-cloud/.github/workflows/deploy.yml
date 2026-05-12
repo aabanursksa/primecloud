@@ -1,0 +1,94 @@
+name: Build & Deploy to Hostinger
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'pnpm'
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build packages (shared-types, accounting-engine, zatca-sdk)
+        run: pnpm --filter @prime-cloud/shared-types build && pnpm --filter @prime-cloud/accounting-engine build && pnpm --filter @prime-cloud/zatca-sdk build || true
+
+      - name: Build NestJS API
+        run: pnpm --filter @prime-cloud/api build
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL || 'postgresql://localhost:5432/primecloud' }}
+
+      - name: Build Next.js Dashboard
+        run: pnpm --filter @prime-cloud/dashboard build
+        env:
+          NEXT_PUBLIC_API_URL: ${{ secrets.API_URL || 'https://primecloud.sa/api/v1' }}
+          NODE_ENV: production
+
+      - name: Build POS app
+        run: pnpm --filter @prime-cloud/pos build
+
+      - name: Assemble deploy package
+        run: |
+          mkdir -p deploy-temp
+          mkdir -p deploy-temp/api
+          mkdir -p deploy-temp/public/dashboard
+          mkdir -p deploy-temp/public/pos
+          mkdir -p deploy-temp/node_modules
+
+          # Copy API build
+          cp -r apps/api/dist/* deploy-temp/api/
+          cp apps/api/package.json deploy-temp/api/
+
+          # Copy Dashboard static export / standalone output
+          if [ -d "apps/dashboard/.next/standalone" ]; then
+            cp -r apps/dashboard/.next/standalone/* deploy-temp/
+          else
+            cp -r apps/dashboard/out/* deploy-temp/public/dashboard/ 2>/dev/null || true
+          fi
+
+          # Copy POS build
+          cp -r apps/pos/dist/* deploy-temp/public/pos/
+
+          # Copy deploy server and config
+          cp deploy/package.json deploy-temp/
+          cp deploy/server.js deploy-temp/
+          cp deploy/start.sh deploy-temp/
+          chmod +x deploy-temp/start.sh
+
+          # Install production deps
+          cd deploy-temp
+          npm install --production
+          cd ..
+
+      - name: Deploy via FTP to Hostinger
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
+        with:
+          server: ${{ secrets.HOSTINGER_FTP_HOST }}
+          username: ${{ secrets.HOSTINGER_FTP_USER }}
+          password: ${{ secrets.HOSTINGER_FTP_PASS }}
+          local-dir: deploy-temp/
+          server-dir: ${{ secrets.HOSTINGER_DEPLOY_PATH || '/' }}
+
+      - name: Deploy to deploy branch (Hostinger Git fallback)
+        run: |
+          git config user.name "Prime Cloud Bot"
+          git config user.email "bot@primecloud.sa"
+          git checkout --orphan deploy-temp-branch
+          rm -rf .github apps packages infrastructure deploy
+          cp -r deploy-temp/* .
+          git add -A
+          git commit -m "Production build $(date +'%Y-%m-%d %H:%M')" || echo "No changes"
+          git push origin deploy-temp-branch:deployment --force || echo "Push failed, check permissions"
+          git checkout main

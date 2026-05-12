@@ -1,20 +1,23 @@
 {
-  "name": "prime-cloud-deploy",
-  "version": "1.0.0",
-  "description": "Prime Cloud Production Deployment",
+  "name": "prime-cloud-production",
+  "version": "2.0.0",
+  "private": true,
+  "description": "Prime Cloud - Production Deployment (Auto-built from monorepo)",
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
-    "dev": "node server.js",
-    "build": "echo Build complete"
+    "build": "echo 'This is a CI-built deployment package. Do not run build manually.'"
   },
   "dependencies": {
+    "@prime-cloud/shared-types": "file:./api/node_modules/@prime-cloud/shared-types",
+    "@prime-cloud/accounting-engine": "file:./api/node_modules/@prime-cloud/accounting-engine",
+    "@prime-cloud/zatca-sdk": "file:./api/node_modules/@prime-cloud/zatca-sdk",
     "express": "^4.21.0",
-    "jsonwebtoken": "^9.0.2",
-    "bcryptjs": "^2.4.3",
     "cors": "^2.8.5",
     "helmet": "^8.0.0",
-    "compression": "^1.7.4"
+    "compression": "^1.7.4",
+    "jsonwebtoken": "^9.0.2",
+    "bcryptjs": "^2.4.3"
   },
   "engines": {
     "node": ">=18.0.0"
