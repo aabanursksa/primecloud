@@ -15,12 +15,13 @@
     "dev:api": "turbo dev --filter=@prime-cloud/api",
     "dev:dashboard": "turbo dev --filter=@prime-cloud/dashboard",
     "dev:pos": "turbo dev --filter=@prime-cloud/pos",
-    "format": "prettier --write \"**/*.{ts,tsx,js,json,css}\"",
+    "format": "prettier --write .",
     "start": "node deploy/server.js"
   },
   "devDependencies": {
     "turbo": "^2.4.0",
     "prettier": "^3.4.0",
-    "@changesets/cli": "^2.27.0"
+    "@changesets/cli": "^2.27.0",
+    "@types/jest": "^29.5.0"
   }
 }
