@@ -13,9 +13,13 @@ Option A: GitHub Auto-Deploy (recommended)
   6. Every push to main auto-deploys
 
 Option B: Manual Upload
-  1. Run: bash deploy/build.sh
-  2. Upload the deploy/ folder via FTP/cPanel
-  3. Configure in cPanel Node.js section
+  1. Ensure pnpm is installed: npm install -g pnpm@10
+  2. Run: bash deploy/build.sh  (or: pnpm build && bash deploy/build.sh)
+  3. Upload the deploy/ folder via FTP/cPanel
+  4. Configure in cPanel Node.js section
+
+NOTE: This project requires pnpm (not npm). Never run npm install at the
+project root - always use: pnpm install
 
 ENVIRONMENT VARIABLES:
 ---------------------

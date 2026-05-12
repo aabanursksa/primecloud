@@ -55,9 +55,9 @@ cp deploy/server.js deploy-temp/
 cp deploy/start.sh deploy-temp/
 chmod +x deploy-temp/start.sh
 
-# Install production dependencies
+# Install production dependencies (deploy-temp is standalone, pnpm preferred)
 cd deploy-temp
-npm install --production 2>/dev/null || true
+pnpm install --prod --no-frozen-lockfile 2>/dev/null || npm install --production 2>/dev/null || true
 cd ..
 
 # Clean up old deploy

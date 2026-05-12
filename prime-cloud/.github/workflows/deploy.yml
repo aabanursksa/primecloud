@@ -67,9 +67,9 @@ jobs:
           cp deploy/start.sh deploy-temp/
           chmod +x deploy-temp/start.sh
 
-          # Install production deps
+          # Install production deps (use pnpm to match project config)
           cd deploy-temp
-          npm install --production
+          pnpm install --prod --no-frozen-lockfile 2>/dev/null || npm install --production
           cd ..
 
       - name: Deploy via FTP to Hostinger

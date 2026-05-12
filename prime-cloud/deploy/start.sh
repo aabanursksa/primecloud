@@ -12,7 +12,11 @@ echo "Working directory: $(pwd)"
 # Ensure node_modules exists
 if [ ! -d "node_modules" ]; then
   echo "Installing dependencies..."
-  npm install --production
+  if command -v pnpm &> /dev/null; then
+    pnpm install --prod --no-frozen-lockfile
+  else
+    npm install --production
+  fi
 fi
 
 # Start server
