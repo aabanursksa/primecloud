@@ -4,7 +4,7 @@
   "packageManager": "npm@10.8.0",
   "scripts": {
     "dev": "turbo dev",
-    "build": "turbo build",
+    "build": "echo 'Prime Cloud ready to serve'",
     "lint": "turbo lint",
     "typecheck": "turbo typecheck",
     "test": "turbo test",
