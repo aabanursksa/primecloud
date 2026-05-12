@@ -9,9 +9,6 @@
     "build": "echo 'This is a CI-built deployment package. Do not run build manually.'"
   },
   "dependencies": {
-    "@prime-cloud/shared-types": "file:./api/node_modules/@prime-cloud/shared-types",
-    "@prime-cloud/accounting-engine": "file:./api/node_modules/@prime-cloud/accounting-engine",
-    "@prime-cloud/zatca-sdk": "file:./api/node_modules/@prime-cloud/zatca-sdk",
     "express": "^4.21.0",
     "cors": "^2.8.5",
     "helmet": "^8.0.0",
