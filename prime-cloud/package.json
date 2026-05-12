@@ -1,38 +1,24 @@
 {
   "name": "prime-cloud",
   "private": true,
-  "version": "0.0.0",
-  "type": "module",
-  "scripts": {
-    "dev": "vite",
-    "build": "tsc -b && vite build",
-    "lint": "eslint .",
-    "preview": "vite preview"
+  "packageManager": "pnpm@10.0.0",
+  "pnpm": {
+    "onlyBuiltDependencies": ["@nestjs/core", "@prisma/client", "@prisma/engines", "msgpackr-extract", "prisma", "sharp"]
   },
-  "dependencies": {
-    "@tailwindcss/vite": "^4.3.0",
-    "class-variance-authority": "^0.7.1",
-    "clsx": "^2.1.1",
-    "lucide-react": "^1.14.0",
-    "react": "^19.2.5",
-    "react-dom": "^19.2.5",
-    "react-router-dom": "^7.15.0",
-    "recharts": "^3.8.1",
-    "tailwind-merge": "^3.5.0",
-    "tailwindcss": "^4.3.0"
+  "scripts": {
+    "dev": "turbo dev",
+    "build": "turbo build",
+    "lint": "turbo lint",
+    "typecheck": "turbo typecheck",
+    "test": "turbo test",
+    "dev:api": "turbo dev --filter=@prime-cloud/api",
+    "dev:dashboard": "turbo dev --filter=@prime-cloud/dashboard",
+    "dev:pos": "turbo dev --filter=@prime-cloud/pos",
+    "format": "prettier --write \"**/*.{ts,tsx,js,json,css}\""
   },
   "devDependencies": {
-    "@eslint/js": "^10.0.1",
-    "@types/node": "^24.12.2",
-    "@types/react": "^19.2.14",
-    "@types/react-dom": "^19.2.3",
-    "@vitejs/plugin-react": "^6.0.1",
-    "eslint": "^10.2.1",
-    "eslint-plugin-react-hooks": "^7.1.1",
-    "eslint-plugin-react-refresh": "^0.5.2",
-    "globals": "^17.5.0",
-    "typescript": "~6.0.2",
-    "typescript-eslint": "^8.58.2",
-    "vite": "^8.0.10"
+    "turbo": "^2.4.0",
+    "prettier": "^3.4.0",
+    "@changesets/cli": "^2.27.0"
   }
 }

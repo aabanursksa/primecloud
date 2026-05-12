@@ -1,0 +1,13 @@
+FROM node:20-alpine AS builder
+WORKDIR /app
+COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
+COPY apps/pos ./apps/pos
+COPY packages ./packages
+RUN npm install -g pnpm && pnpm install --frozen-lockfile
+RUN pnpm --filter @prime-cloud/pos build
+
+FROM nginx:stable-alpine
+COPY --from=builder /app/apps/pos/dist /usr/share/nginx/html
+COPY infrastructure/docker/nginx-pos.conf /etc/nginx/conf.d/default.conf
+EXPOSE 80
+CMD ["nginx", "-g", "daemon off;"]

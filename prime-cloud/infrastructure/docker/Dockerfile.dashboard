@@ -1,0 +1,15 @@
+FROM node:20-alpine AS builder
+WORKDIR /app
+COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
+COPY apps/dashboard ./apps/dashboard
+COPY packages ./packages
+RUN npm install -g pnpm && pnpm install --frozen-lockfile
+RUN pnpm --filter @prime-cloud/dashboard build
+
+FROM node:20-alpine
+WORKDIR /app
+COPY --from=builder /app/apps/dashboard/.next ./.next
+COPY --from=builder /app/apps/dashboard/public ./public
+COPY --from=builder /app/apps/dashboard/package.json ./
+EXPOSE 3000
+CMD ["pnpm", "--filter", "@prime-cloud/dashboard", "start"]

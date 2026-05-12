@@ -1,0 +1,237 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ─── Public Schema (shared across all tenants) ───
+
+model Tenant {
+  id        String   @id @default(uuid())
+  name      String
+  slug      String   @unique
+  plan      String   @default("free")
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+// ─── Tenant-specific schemas will be created dynamically ───
+// ─── Each tenant_{uuid} schema contains the tables below ───
+
+// Note: Schema-per-tenant means these models are replicated
+// per tenant schema at runtime via raw SQL migrations.
+// Prisma is used here for type generation and migration templates.
+
+model User {
+  id        String          @id @default(uuid())
+  tenantId  String
+  email     String          @unique
+  password  String
+  name      String
+  role      String          @default("cashier")
+  isActive  Boolean         @default(true)
+  branchId  String?
+  createdAt DateTime        @default(now())
+  updatedAt DateTime        @updatedAt
+  sessions  POSession[]
+}
+
+model Branch {
+  id        String      @id @default(uuid())
+  tenantId  String
+  name      String
+  nameAr    String
+  address   String?
+  isActive  Boolean     @default(true)
+  createdAt DateTime    @default(now())
+  updatedAt DateTime    @updatedAt
+  users     User[]
+  sessions  POSession[]
+}
+
+model Account {
+  id        String   @id @default(uuid())
+  tenantId  String
+  code      String
+  nameAr    String
+  nameEn    String
+  type      String   // asset, liability, equity, revenue, expense
+  level     Int      @default(0)
+  parentId  String?
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model JournalEntry {
+  id          String              @id @default(uuid())
+  tenantId    String
+  reference   String?
+  description String?
+  date        DateTime            @default(now())
+  createdAt   DateTime            @default(now())
+  lines       JournalEntryLine[]
+}
+
+model JournalEntryLine {
+  id             String       @id @default(uuid())
+  entryId        String
+  accountId      String
+  debit          Int          @default(0)
+  credit         Int          @default(0)
+  description    String?
+  journalEntry   JournalEntry @relation(fields: [entryId], references: [id])
+  account        Account      @relation(fields: [accountId], references: [id])
+
+  @@index([entryId])
+}
+
+model Category {
+  id        String    @id @default(uuid())
+  tenantId  String
+  name      String
+  nameAr    String
+  isActive  Boolean   @default(true)
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  products  Product[]
+}
+
+model Product {
+  id          String       @id @default(uuid())
+  tenantId    String
+  name        String
+  nameAr      String
+  barcode     String?
+  price       Int          // in halalas
+  cost        Int?         // in halalas
+  categoryId  String?
+  category    Category?    @relation(fields: [categoryId], references: [id])
+  isActive    Boolean      @default(true)
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+  invoiceItem InvoiceItem[]
+}
+
+model POSession {
+  id         String            @id @default(uuid())
+  tenantId   String
+  branchId   String
+  userId     String
+  status     String            @default("open")
+  openedAt   DateTime          @default(now())
+  closedAt   DateTime?
+  user       User              @relation(fields: [userId], references: [id])
+  branch     Branch            @relation(fields: [branchId], references: [id])
+}
+
+model PosTransaction {
+  id            String          @id @default(uuid())
+  tenantId      String
+  sessionId     String
+  branchId      String
+  cashierId     String
+  type          String          @default("sale")
+  subtotal      Int
+  discountTotal Int             @default(0)
+  taxTotal      Int
+  total         Int
+  paymentMethod String
+  status        String          @default("paid")
+  syncStatus    String          @default("synced")
+  note          String?
+  createdAt     DateTime        @default(now())
+  items         TransactionItem[]
+}
+
+model TransactionItem {
+  id              String          @id @default(uuid())
+  transactionId   String
+  productId       String
+  productName     String
+  productNameAr   String
+  quantity        Int
+  unitPrice       Int
+  totalPrice      Int
+  modifiers       String?         // JSON
+  notes           String?
+  transaction     PosTransaction  @relation(fields: [transactionId], references: [id])
+  product         Product         @relation(fields: [productId], references: [id])
+
+  @@index([transactionId])
+}
+
+model Invoice {
+  id              String        @id @default(uuid())
+  tenantId        String
+  type            String        @default("pos")
+  status          String        @default("paid")
+  subtotal        Int
+  vat             Int
+  total           Int
+  note            String?
+  zatcaStatus     String?       @default("pending")
+  zatcaUuid       String?
+  invoiceCounter  Int?
+  previousHash    String?
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+  items           InvoiceItem[]
+}
+
+model InvoiceItem {
+  id          String   @id @default(uuid())
+  invoiceId   String
+  productId   String
+  productName String
+  quantity    Int
+  unitPrice   Int
+  totalPrice  Int
+  invoice     Invoice  @relation(fields: [invoiceId], references: [id])
+  product     Product  @relation(fields: [productId], references: [id])
+
+  @@index([invoiceId])
+}
+
+model ZatcaSubmission {
+  id             String   @id @default(uuid())
+  tenantId       String
+  invoiceId      String
+  status         String   @default("pending")
+  requestXml     String?
+  responseJson   String?
+  invoiceCounter Int?
+  previousHash   String?
+  signedXml      String?
+  qrCode         String?
+  errorMessage   String?
+  submittedAt    DateTime?
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+}
+
+model SyncQueue {
+  id          String   @id @default(uuid())
+  tenantId    String
+  entityType  String
+  entityId    String
+  action      String   // create, update, delete
+  payload     String   // JSON
+  status      String   @default("pending")
+  attempts    Int      @default(0)
+  error       String?
+  createdAt   DateTime @default(now())
+  syncedAt    DateTime?
+}
+
+model Inventory {
+  id        String   @id @default(uuid())
+  tenantId  String
+  productId String
+  quantity  Int      @default(0)
+  updatedAt DateTime @updatedAt
+}

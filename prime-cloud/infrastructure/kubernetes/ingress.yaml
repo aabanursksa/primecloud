@@ -1,0 +1,46 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: prime-cloud
+  namespace: prime-cloud
+  annotations:
+    kubernetes.io/ingress.class: nginx
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+spec:
+  tls:
+    - hosts:
+        - primecloud.sa
+        - api.primecloud.sa
+        - pos.primecloud.sa
+      secretName: prime-cloud-tls
+  rules:
+    - host: primecloud.sa
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: prime-dashboard
+                port:
+                  number: 3000
+    - host: api.primecloud.sa
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: prime-api
+                port:
+                  number: 4000
+    - host: pos.primecloud.sa
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: prime-pos
+                port:
+                  number: 80

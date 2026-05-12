@@ -1,0 +1,30 @@
+{
+  "name": "@prime-cloud/pos",
+  "version": "0.0.1",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "preview": "vite preview",
+    "typecheck": "tsc --noEmit",
+    "tauri": "tauri"
+  },
+  "dependencies": {
+    "@prime-cloud/shared-types": "workspace:*",
+    "@prime-cloud/zatca-sdk": "workspace:*",
+    "react": "^19.2.5",
+    "react-dom": "^19.2.5",
+    "lucide-react": "^0.400.0",
+    "dexie": "^4.0.0",
+    "idb": "^8.0.0"
+  },
+  "devDependencies": {
+    "@tauri-apps/cli": "^2.0.0",
+    "@types/react": "^19.2.14",
+    "@types/react-dom": "^19.2.14",
+    "@vitejs/plugin-react": "^4.0.0",
+    "typescript": "~6.0.2",
+    "vite": "^6.0.0"
+  }
+}

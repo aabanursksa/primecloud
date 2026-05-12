@@ -1,0 +1,82 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: prime-api
+  namespace: prime-cloud
+  labels:
+    app: prime-api
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: prime-api
+  template:
+    metadata:
+      labels:
+        app: prime-api
+    spec:
+      containers:
+        - name: api
+          image: primecloud/api:latest
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 4000
+          env:
+            - name: DATABASE_URL
+              valueFrom:
+                secretKeyRef:
+                  name: prime-db
+                  key: url
+            - name: REDIS_URL
+              valueFrom:
+                secretKeyRef:
+                  name: prime-redis
+                  key: url
+            - name: JWT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: prime-jwt
+                  key: secret
+            - name: JWT_REFRESH_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: prime-jwt
+                  key: refresh_secret
+            - name: ZATCA_API_URL
+              valueFrom:
+                secretKeyRef:
+                  name: prime-zatca
+                  key: api_url
+          resources:
+            requests:
+              cpu: "250m"
+              memory: "256Mi"
+            limits:
+              cpu: "500m"
+              memory: "512Mi"
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 4000
+            initialDelaySeconds: 10
+            periodSeconds: 15
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: 4000
+            initialDelaySeconds: 5
+            periodSeconds: 10
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: prime-api
+  namespace: prime-cloud
+spec:
+  selector:
+    app: prime-api
+  ports:
+    - port: 4000
+      targetPort: 4000
+      protocol: TCP
+  type: ClusterIP

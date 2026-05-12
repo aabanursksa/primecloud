@@ -1,0 +1,29 @@
+{
+  "name": "@prime-cloud/dashboard",
+  "version": "0.0.1",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@prime-cloud/shared-types": "workspace:*",
+    "@prime-cloud/ui": "workspace:*",
+    "next": "^15.0.0",
+    "react": "^19.2.5",
+    "react-dom": "^19.2.5",
+    "lucide-react": "^0.400.0",
+    "clsx": "^2.1.1",
+    "tailwind-merge": "^3.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.0.0",
+    "@types/react": "^19.2.14",
+    "@types/react-dom": "^19.2.14",
+    "typescript": "~6.0.2",
+    "tailwindcss": "^4.0.0"
+  }
+}

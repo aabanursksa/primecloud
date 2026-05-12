@@ -1,0 +1,53 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: prime-dashboard
+  namespace: prime-cloud
+  labels:
+    app: prime-dashboard
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: prime-dashboard
+  template:
+    metadata:
+      labels:
+        app: prime-dashboard
+    spec:
+      containers:
+        - name: dashboard
+          image: primecloud/dashboard:latest
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 3000
+          env:
+            - name: NEXT_PUBLIC_API_URL
+              value: "https://api.primecloud.sa"
+          resources:
+            requests:
+              cpu: "100m"
+              memory: "256Mi"
+            limits:
+              cpu: "300m"
+              memory: "512Mi"
+          livenessProbe:
+            httpGet:
+              path: /
+              port: 3000
+            initialDelaySeconds: 10
+            periodSeconds: 15
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: prime-dashboard
+  namespace: prime-cloud
+spec:
+  selector:
+    app: prime-dashboard
+  ports:
+    - port: 3000
+      targetPort: 3000
+      protocol: TCP
+  type: ClusterIP
