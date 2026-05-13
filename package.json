@@ -3,6 +3,6 @@
   "private": true,
   "version": "1.0.0",
   "scripts": {
-    "build": "npm --prefix prime-cloud install && npm --prefix prime-cloud run build"
+    "build": "npm --prefix prime-cloud install && npm --prefix prime-cloud run build && npm --prefix prime-cloud/deploy install --production"
   }
 }
