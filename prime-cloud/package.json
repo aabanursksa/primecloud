@@ -6,7 +6,7 @@
   "workspaces": ["apps/*", "packages/*"],
   "scripts": {
     "dev": "turbo dev",
-    "build": "turbo run build",
+    "build": "npx turbo run build",
     "build:api": "npm run build -w apps/api",
     "build:dashboard": "npm run build -w apps/dashboard",
     "build:pos": "npm run build -w apps/pos",
