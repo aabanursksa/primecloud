@@ -1,5 +1,8 @@
 {
   "name": "prime-cloud-monorepo",
   "private": true,
-  "version": "1.0.0"
+  "version": "1.0.0",
+  "scripts": {
+    "build": "cd prime-cloud && npm run build"
+  }
 }
