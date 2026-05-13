@@ -2,8 +2,7 @@
   "name": "prime-cloud-monorepo",
   "private": true,
   "version": "1.0.0",
-  "workspaces": ["prime-cloud"],
   "scripts": {
-    "build": "npm run build --workspace=prime-cloud"
+    "build": "npm --prefix prime-cloud run build"
   }
 }
