@@ -3,6 +3,6 @@
   "private": true,
   "version": "1.0.0",
   "scripts": {
-    "build": "cd prime-cloud && npm run build"
+    "build": "cd prime-cloud && npm install && npm run build"
   }
 }
