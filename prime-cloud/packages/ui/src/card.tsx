@@ -1,3 +1,4 @@
+import React from 'react'
 import { cn } from './index'
 
 export function Card({ className, children }: { className?: string; children: React.ReactNode }) {

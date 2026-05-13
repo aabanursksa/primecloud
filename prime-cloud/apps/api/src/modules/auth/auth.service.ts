@@ -39,7 +39,7 @@ export class AuthService {
     return this.generateTokens(user)
   }
 
-  private generateTokens(user: { id: string; tenantId: string; role: string; branchId?: string | null }) {
+  private generateTokens(user: { id: string; email: string; name: string; tenantId: string; role: string; branchId?: string | null }) {
     const payload = { sub: user.id, tenantId: user.tenantId, role: user.role, branchId: user.branchId }
     return {
       accessToken: this.jwtService.sign(payload, { expiresIn: '15m' }),

@@ -1,3 +1,4 @@
+import React from 'react'
 import { cn } from './index'
 
 export function Modal({ open, onClose, title, children, className }: { open: boolean; onClose: () => void; title?: string; children: React.ReactNode; className?: string }) {

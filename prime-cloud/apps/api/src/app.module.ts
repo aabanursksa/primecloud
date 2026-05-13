@@ -16,7 +16,7 @@ import { BranchesModule } from './modules/branches/branches.module'
 
 @Module({
   imports: [
-    ThrottlerModule.forGlobal([{ ttl: 60000, limit: 100 }]),
+    ThrottlerModule.forRoot([{ ttl: 60000, limit: 100 }]),
     PrismaModule,
     AuthModule,
     TenantsModule,

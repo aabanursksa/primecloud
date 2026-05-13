@@ -15,7 +15,7 @@ export class AccountingService {
     description?: string
     lines: { accountId: string; debit: number; credit: number; description?: string }[]
   }) {
-    const entry = this.journal.createEntry(data.lines.map((l) => ({
+    const entry = (this.journal as any).createEntry(data.lines.map((l) => ({
       accountId: l.accountId,
       debit: l.debit,
       credit: l.credit,
@@ -27,7 +27,7 @@ export class AccountingService {
         reference: data.reference,
         description: data.description,
         lines: {
-          create: entry.lines.map((l) => ({
+          create: entry.lines.map((l: any) => ({
             accountId: l.accountId,
             debit: l.debit,
             credit: l.credit,
@@ -47,7 +47,7 @@ export class AccountingService {
       include: { journalEntry: true, account: true },
     })
 
-    const lines = entries.map((e) => ({
+    const lines = entries.map((e: any) => ({
       accountId: e.accountId,
       accountCode: e.account.code,
       accountNameAr: e.account.nameAr,
@@ -57,7 +57,7 @@ export class AccountingService {
       credit: e.credit,
     }))
 
-    return this.balanceChecker.trialBalance(lines as any)
+    return this.balanceChecker.generateTrialBalance(lines as any)
   }
 
   async getIncomeStatement(startDate: string, endDate: string) {
@@ -68,7 +68,7 @@ export class AccountingService {
       include: { account: true },
     })
 
-    const lines = entries.map((e) => ({
+    const lines = entries.map((e: any) => ({
       accountId: e.accountId,
       accountCode: e.account.code,
       accountNameAr: e.account.nameAr,
@@ -78,7 +78,7 @@ export class AccountingService {
       credit: e.credit,
     }))
 
-    return this.balanceChecker.incomeStatement(lines as any)
+    return this.balanceChecker.generateIncomeStatement(lines as any)
   }
 
   async getBalanceSheet() {
@@ -87,7 +87,7 @@ export class AccountingService {
       include: { account: true },
     })
 
-    const lines = entries.map((e) => ({
+    const lines = entries.map((e: any) => ({
       accountId: e.accountId,
       accountCode: e.account.code,
       accountNameAr: e.account.nameAr,
@@ -97,6 +97,6 @@ export class AccountingService {
       credit: e.credit,
     }))
 
-    return this.balanceChecker.balanceSheet(lines as any)
+    return this.balanceChecker.generateBalanceSheet(lines as any, 0)
   }
 }

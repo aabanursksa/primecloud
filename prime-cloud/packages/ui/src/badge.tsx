@@ -1,3 +1,4 @@
+import React from 'react'
 import { cn } from './index'
 
 export type BadgeVariant = 'success' | 'warning' | 'error' | 'info' | 'neutral'

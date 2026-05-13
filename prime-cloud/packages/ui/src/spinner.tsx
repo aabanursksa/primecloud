@@ -1,3 +1,4 @@
+import React from 'react'
 import { cn } from './index'
 
 export function Spinner({ className }: { className?: string }) {

@@ -1,3 +1,4 @@
+import React from 'react'
 import { cn } from './index'
 
 export function Table({ headers, rows, className }: { headers: string[]; rows: (string | React.ReactNode)[][]; className?: string }) {

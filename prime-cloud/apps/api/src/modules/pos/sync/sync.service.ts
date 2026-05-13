@@ -27,12 +27,12 @@ export class SyncService {
     // Mark as synced
     if (pending.length > 0) {
       await this.prisma.syncQueue.updateMany({
-        where: { id: { in: pending.map((p) => p.id) } },
+        where: { id: { in: pending.map((p: any) => p.id) } },
         data: { status: 'synced', syncedAt: new Date() },
       })
     }
 
-    return pending.map((p) => ({
+    return pending.map((p: any) => ({
       id: p.id,
       entityType: p.entityType,
       entityId: p.entityId,
