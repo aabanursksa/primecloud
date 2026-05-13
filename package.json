@@ -3,6 +3,6 @@
   "private": true,
   "version": "1.0.0",
   "scripts": {
-    "build": "npm --prefix prime-cloud install && npm --prefix prime-cloud run build && npm --prefix prime-cloud/deploy install --production && cp -r prime-cloud/apps/pos/dist/* prime-cloud/deploy/public/pos/ 2>/dev/null; cp -r prime-cloud/apps/api/dist/* prime-cloud/deploy/api/ 2>/dev/null; if [ -d prime-cloud/apps/dashboard/out ]; then rm -rf prime-cloud/deploy/public/dashboard && cp -r prime-cloud/apps/dashboard/out prime-cloud/deploy/public/dashboard 2>/dev/null; fi"
+    "build": "rm -f package-lock.json && npm --prefix prime-cloud install && npm --prefix prime-cloud run build && npm --prefix prime-cloud/deploy install --production && rm -rf prime-cloud/deploy/public/pos/* && cp -r prime-cloud/apps/pos/dist/* prime-cloud/deploy/public/pos/ && rm -rf prime-cloud/deploy/api/* && cp -r prime-cloud/apps/api/dist/* prime-cloud/deploy/api/ && rm -rf prime-cloud/deploy/public/dashboard && cp -r prime-cloud/apps/dashboard/out prime-cloud/deploy/public/dashboard"
   }
 }
