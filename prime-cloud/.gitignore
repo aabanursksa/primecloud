@@ -1,6 +1,7 @@
 node_modules/
 dist/
 .next/
+out/
 .cache/
 coverage/
 *.log
@@ -11,3 +12,10 @@ Thumbs.db
 *.pem
 !certs/*.pem
 .turbo/
+
+# Deploy build outputs (CI builds fresh)
+deploy/public/
+deploy/api/
+deploy/node_modules/
+deploy/package-lock.json
+deploy/prime-cloud-deploy.zip

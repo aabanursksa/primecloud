@@ -10,34 +10,16 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - uses: pnpm/action-setup@v4
-        with:
-          version: 10
-
       - uses: actions/setup-node@v4
         with:
           node-version: 20
-          cache: 'pnpm'
+          cache: 'npm'
 
       - name: Install dependencies
-        run: pnpm install --frozen-lockfile
+        run: npm ci
 
-      - name: Build packages (shared-types, accounting-engine, zatca-sdk)
-        run: pnpm --filter @prime-cloud/shared-types build && pnpm --filter @prime-cloud/accounting-engine build && pnpm --filter @prime-cloud/zatca-sdk build || true
-
-      - name: Build NestJS API
-        run: pnpm --filter @prime-cloud/api build
-        env:
-          DATABASE_URL: ${{ secrets.DATABASE_URL || 'postgresql://localhost:5432/primecloud' }}
-
-      - name: Build Next.js Dashboard
-        run: pnpm --filter @prime-cloud/dashboard build
-        env:
-          NEXT_PUBLIC_API_URL: ${{ secrets.API_URL || 'https://primecloud.sa/api/v1' }}
-          NODE_ENV: production
-
-      - name: Build POS app
-        run: pnpm --filter @prime-cloud/pos build
+      - name: Build all packages
+        run: npm run build
 
       - name: Assemble deploy package
         run: |
@@ -45,21 +27,18 @@ jobs:
           mkdir -p deploy-temp/api
           mkdir -p deploy-temp/public/dashboard
           mkdir -p deploy-temp/public/pos
-          mkdir -p deploy-temp/node_modules
 
           # Copy API build
           cp -r apps/api/dist/* deploy-temp/api/
-          cp apps/api/package.json deploy-temp/api/
+          cp apps/api/package.json deploy-temp/api/ 2>/dev/null || true
 
-          # Copy Dashboard static export / standalone output
-          if [ -d "apps/dashboard/.next/standalone" ]; then
-            cp -r apps/dashboard/.next/standalone/* deploy-temp/
-          else
-            cp -r apps/dashboard/out/* deploy-temp/public/dashboard/ 2>/dev/null || true
+          # Copy Dashboard static export
+          if [ -d "apps/dashboard/out" ]; then
+            cp -r apps/dashboard/out/* deploy-temp/public/dashboard/
           fi
 
           # Copy POS build
-          cp -r apps/pos/dist/* deploy-temp/public/pos/
+          cp -r apps/pos/dist/* deploy-temp/public/pos/ 2>/dev/null || true
 
           # Copy deploy server and config
           cp deploy/package.json deploy-temp/
@@ -67,9 +46,9 @@ jobs:
           cp deploy/start.sh deploy-temp/
           chmod +x deploy-temp/start.sh
 
-          # Install production deps (use pnpm to match project config)
+          # Install production deps
           cd deploy-temp
-          pnpm install --prod --no-frozen-lockfile 2>/dev/null || npm install --production
+          npm install --production --ignore-scripts
           cd ..
 
       - name: Deploy via FTP to Hostinger

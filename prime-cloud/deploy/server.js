@@ -74,6 +74,31 @@ try {
     fallbackDb.invoices.push(invoice);
     res.status(201).json(invoice);
   });
+
+  // ─── Dashboard API (Demo) ───
+  app.get('/api/v1/dashboard/stats', (_req, res) => {
+    res.json({
+      totalRevenue: 48750000,
+      totalVat: 7312500,
+      invoiceCount: 1247,
+      todayTransactions: 38,
+      activeSessions: 12,
+      activeBranches: 5,
+      pendingZatca: 3,
+      lowStockItems: 7,
+    });
+  });
+  app.get('/api/v1/dashboard/recent-transactions', (_req, res) => {
+    res.json([
+      { id: '1', invoiceNumber: 'INV-2024-8941', customer: 'مؤسسة النور للتجارة', amount: 245000, status: 'completed', time: '10:32 ص', paymentMethod: 'Mada' },
+      { id: '2', invoiceNumber: 'INV-2024-8940', customer: 'شركة الراشد المحدودة', amount: 89000, status: 'completed', time: '10:15 ص', paymentMethod: 'Apple Pay' },
+      { id: '3', invoiceNumber: 'INV-2024-8939', customer: 'مطعم البستان', amount: 156000, status: 'completed', time: '09:58 ص', paymentMethod: 'Cash' },
+      { id: '4', invoiceNumber: 'INV-2024-8938', customer: 'مؤسسة الفهد', amount: 423000, status: 'completed', time: '09:30 ص', paymentMethod: 'Credit Card' },
+      { id: '5', invoiceNumber: 'INV-2024-8937', customer: 'محل العطاء', amount: 34200, status: 'cancelled', time: '08:45 ص', paymentMethod: 'Mada' },
+      { id: '6', invoiceNumber: 'INV-2024-8936', customer: 'شركة التميز', amount: 678000, status: 'pending', time: '08:12 ص', paymentMethod: 'Credit Card' },
+      { id: '7', invoiceNumber: 'INV-2024-8935', customer: 'مخبز الأصيل', amount: 51200, status: 'completed', time: '07:55 ص', paymentMethod: 'Cash' },
+    ]);
+  });
   app.get('/api/v1/pos/sessions/branch/:id', (_req, res) => res.json([]));
   app.get('/api/v1/inventory', (_req, res) => res.json([]));
   app.get('/api/v1/accounting/trial-balance', (_req, res) => res.json({ rows: [], totalDebit: 0, totalCredit: 0, isBalanced: true }));
